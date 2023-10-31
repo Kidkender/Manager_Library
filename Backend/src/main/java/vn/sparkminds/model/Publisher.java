@@ -1,9 +1,6 @@
 package vn.sparkminds.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,12 +14,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "t_category")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+@NoArgsConstructor
+@Table(name = "t_publishers")
+public class Publisher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,16 +27,11 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
-    private String description;
+    @OneToMany
+    private Book book;
 
-    @Column(name = "createAt")
+    @Column(name = "address")
+    private String address;
+
     private LocalDateTime createdAt;
-
-    @Column(name = "updatedAt")
-    private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Book> books = new ArrayList<>();
-
 }

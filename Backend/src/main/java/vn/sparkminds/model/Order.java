@@ -3,43 +3,47 @@ package vn.sparkminds.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Table(name = "t_category")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+@Table(name = "t_orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne
+    private User user;
 
-    @Column(name = "description")
-    private String description;
+    @OneToMany
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    @Column(name = "createAt")
-    private LocalDateTime createdAt;
+    @Column(name = "order_date")
+    private LocalDateTime orderDate;
 
-    @Column(name = "updatedAt")
-    private LocalDateTime updatedAt;
+    @Column(name = "delivery_date")
+    private LocalDateTime deliveryDate;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Book> books = new ArrayList<>();
+    @ManyToOne
+    private Address shippingAddress;
+
 
 }
