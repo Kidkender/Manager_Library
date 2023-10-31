@@ -12,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,18 +35,25 @@ public class Author {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "country")
-    private String country;
+    @Column(name = "national")
+    private String national;
 
-    @Column(name = "born")
+    @Column(name = "birth")
+    @Temporal(TemporalType.DATE)
     private LocalDate birth;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "biography")
+    private String biography;
+
+    @Column(name = "email")
+    private String email;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Book> books = new ArrayList<Book>();
 
     @Column(name = "createAt")
     private LocalDateTime createdAt;
+
+    @Column(name = "updatedAt")
+    private LocalDateTime updatedAt;
 }

@@ -2,14 +2,16 @@ package vn.sparkminds.services.dto.request;
 
 public class AuthorRequest {
     private String name;
-    private String description;
+    private String bio;
+    private String email;
+    private String national;
 
-    public AuthorRequest(String name, String description) {
+    public AuthorRequest(String name, String bio, String email, String national) {
         this.name = name;
-        this.description = description;
+        this.bio = bio;
+        this.email = email;
+        this.national = national;
     }
-
-    public AuthorRequest() {}
 
     public String getName() {
         return name;
@@ -19,11 +21,29 @@ public class AuthorRequest {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getBio() {
+        return bio;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBio(String bio) {
+        this.bio = bio;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNational() {
+        return national;
+    }
+
+    public void setNational(String national) {
+        this.national = national;
+    }
+
+
 }
