@@ -7,7 +7,7 @@ import vn.sparkminds.model.Category;
 public interface CategoryService {
     public Category createCategory(Category category);
 
-    public String deleteCategory(Long categoryId) throws CategoryException;
+    public void deleteCategory(Long categoryId) throws CategoryException;
 
     public Category findCategoryById(Long categoryId) throws CategoryException;
 

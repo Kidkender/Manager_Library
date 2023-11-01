@@ -120,4 +120,16 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(book);
     }
 
+    @Override
+    public List<BookResponse> findBookByCategoryAuthor(Long category, Long AuthorId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Book> importMutilBooks() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

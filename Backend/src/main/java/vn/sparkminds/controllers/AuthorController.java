@@ -15,23 +15,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.websocket.server.PathParam;
 import vn.sparkminds.exceptions.AuthorException;
+import vn.sparkminds.exceptions.UserException;
 import vn.sparkminds.model.Author;
+import vn.sparkminds.model.User;
 import vn.sparkminds.services.AuthorService;
+import vn.sparkminds.services.UserService;
 import vn.sparkminds.services.dto.request.AuthorRequest;
 import vn.sparkminds.services.dto.response.ApiResponse;
 import vn.sparkminds.services.dto.response.AuthorResponse;
 
 @RequestMapping("/api/v1/authors")
 @RestController
-
 public class AuthorController {
     @Autowired
-    private static AuthorService authorService;
+    private AuthorService authorService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<Author> createAuthorHandler(@RequestHeader("Authorization") String jwt,
-            @RequestBody Author req) {
-        // jwt
+            @RequestBody Author req) throws UserException {
+        User user = userService.findUserByJwt(jwt);
         Author createdAuthor = authorService.createAuthor(req);
         return new ResponseEntity<>(createdAuthor, HttpStatus.CREATED);
 
@@ -40,8 +45,9 @@ public class AuthorController {
     @PutMapping("/{id}")
     public ResponseEntity<AuthorResponse> updateAuthorHandler(
             @RequestHeader("Authorization") String jwt, @RequestBody AuthorRequest req,
-            @PathVariable("id") Long id) throws AuthorException {
+            @PathVariable("id") Long id) throws AuthorException, UserException {
 
+        User user = userService.findUserByJwt(jwt);
         AuthorResponse response = authorService.updateAuthor(id, req);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -49,8 +55,9 @@ public class AuthorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteAuthorHandler(
             @RequestHeader("Authorization") String jwt, @PathVariable("id") Long id)
-            throws AuthorException {
+            throws AuthorException, UserException {
 
+        User user = userService.findUserByJwt(jwt);
         authorService.deleteAuthor(id);
         ApiResponse response = new ApiResponse("Delete successfully", true);
         return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);

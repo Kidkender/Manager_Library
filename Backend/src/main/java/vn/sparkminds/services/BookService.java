@@ -24,5 +24,7 @@ public interface BookService {
 
     public List<BookResponse> findBookByAuthor(Long authorId) throws AuthorException;
 
+    public List<BookResponse> findBookByCategoryAuthor(Long category, Long AuthorId);
 
+    public List<Book> importMutilBooks();
 }

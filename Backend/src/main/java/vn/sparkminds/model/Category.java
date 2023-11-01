@@ -36,6 +36,12 @@ public class Category {
     @Column(name = "createAt")
     private LocalDateTime createdAt;
 
+    @Column(name = "quantity_invetory")
+    private int quantityInvetory;
+
+    @Column(name = "total_book")
+    private int totalBook;
+
     @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 

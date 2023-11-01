@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.sparkminds.exceptions.AuthorException;
 import vn.sparkminds.exceptions.BookException;
 import vn.sparkminds.exceptions.CategoryException;
+import vn.sparkminds.exceptions.UserException;
 import vn.sparkminds.model.Book;
+import vn.sparkminds.model.User;
 import vn.sparkminds.services.BookService;
+import vn.sparkminds.services.UserService;
 import vn.sparkminds.services.dto.request.BookRequest;
 import vn.sparkminds.services.dto.response.ApiResponse;
 import vn.sparkminds.services.dto.response.BookResponse;
@@ -30,9 +33,14 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping
     public ResponseEntity<Book> createBookHandler(@RequestHeader("Authorization") String jwt,
-            Book req) {
+            Book req) throws UserException {
+        User user = userService.findUserByJwt(jwt);
+
         Book createdBook = bookService.createBook(req);
         return new ResponseEntity<Book>(createdBook, HttpStatus.CREATED);
     }
@@ -40,14 +48,16 @@ public class BookController {
     @PutMapping("{id}")
     public ResponseEntity<BookResponse> updateBookHandler(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String jwt, @RequestBody BookRequest req)
-            throws BookException {
+            throws BookException, UserException {
+        User user = userService.findUserByJwt(jwt);
         BookResponse updatedBook = bookService.updateBook(id, req);
         return new ResponseEntity<BookResponse>(updatedBook, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteBookHandler(@PathVariable("id") Long id,
-            @RequestHeader("Authorization") String jwt) throws BookException {
+            @RequestHeader("Authorization") String jwt) throws BookException, UserException {
+        User user = userService.findUserByJwt(jwt);
         bookService.deleteBook(id);
         ApiResponse response = new ApiResponse(jwt, true);
         return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
