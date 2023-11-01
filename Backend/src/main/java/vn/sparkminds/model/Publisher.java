@@ -1,6 +1,8 @@
 package vn.sparkminds.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,10 +30,10 @@ public class Publisher {
     private String name;
 
     @OneToMany
-    private Book book;
+    private List<Book> books = new ArrayList<>();
 
     @Column(name = "address")
     private String address;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
 }

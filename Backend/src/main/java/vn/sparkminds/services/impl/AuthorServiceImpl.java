@@ -28,12 +28,13 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public Author createAuthor(AuthorRequest req) {
+    public Author createAuthor(Author req) {
         Author author = new Author();
         author.setName(req.getName());
         author.setEmail(req.getEmail());
         author.setNational(req.getNational());
-        author.setBiography(req.getBio());
+        author.setBiography(req.getBiography());
+        author.setBirth(req.getBirth());
         author.setCreatedAt(LocalDateTime.now());
         return authorRepository.save(author);
 
@@ -68,15 +69,30 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
-    public AuthorResponse updateAuthor(AuthorRequest req) {
-        Author author = new Author();
-        author.setName(req.getName());
-        author.setEmail(req.getEmail());
-        author.setBiography(req.getBio());
-        author.setNational(req.getNational());
+    public AuthorResponse updateAuthor(Long authorId, AuthorRequest req) throws AuthorException {
+        Author author = findAuthorById(authorId);
+        if (req.getName() != null) {
+
+            author.setName(req.getName());
+        }
+        if (req.getEmail() != null) {
+
+            author.setEmail(req.getEmail());
+        }
+        if (req.getBio() != null) {
+
+            author.setBiography(req.getBio());
+        }
+        if (req.getNational() != null) {
+
+            author.setNational(req.getNational());
+        }
+
         author.setUpdatedAt(LocalDateTime.now());
         Author updatedAuthor = authorRepository.save(author);
+
         return authorMapper.toAuthorResponse(updatedAuthor);
+
     }
 
     @Override

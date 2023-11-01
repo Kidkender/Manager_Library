@@ -11,6 +11,6 @@ import vn.sparkminds.model.Book;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
     @Modifying
-    @Query("Select b From Book Where b.category.id IN =:id Order by b.createdAt Desc")
+    @Query("SELECT b FROM Book b WHERE b.category.id = :id ORDER BY b.createAt Desc")
     public List<Book> findBookByCategory(@Param("id") Long id);
 }

@@ -7,9 +7,9 @@ import vn.sparkminds.services.dto.request.AuthorRequest;
 import vn.sparkminds.services.dto.response.AuthorResponse;
 
 public interface AuthorService {
-    public Author createAuthor(AuthorRequest author);
+    public Author createAuthor(Author author);
 
-    public AuthorResponse updateAuthor(AuthorRequest req);
+    public AuthorResponse updateAuthor(Long authorId, AuthorRequest req) throws AuthorException;
 
     public void deleteAuthor(Long authorId) throws AuthorException;
 

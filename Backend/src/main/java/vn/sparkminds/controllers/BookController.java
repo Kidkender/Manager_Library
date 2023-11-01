@@ -74,10 +74,10 @@ public class BookController {
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
-    @GetMapping("/author/search")
-    public ResponseEntity<List<BookResponse>> getBooksByAuthor(@RequestParam("name") String name)
+    @GetMapping("/author/{id}")
+    public ResponseEntity<List<BookResponse>> getBooksByAuthor(@RequestParam("id") Long id)
             throws AuthorException {
-        List<BookResponse> books = bookService.findBookByAuthor(name);
+        List<BookResponse> books = bookService.findBookByAuthor(id);
         return new ResponseEntity<List<BookResponse>>(books, HttpStatus.OK);
     }
 

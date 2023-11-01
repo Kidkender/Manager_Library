@@ -1,16 +1,15 @@
 package vn.sparkminds.services;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import vn.sparkminds.exceptions.PublisherException;
 import vn.sparkminds.model.Publisher;
 
-public interface PublisherService extends JpaRepository<Publisher, Long> {
+public interface PublisherService {
     public Publisher createPublisher(Publisher publisher);
 
-    public Publisher findPublisherById(Long publisherId);
+    public Publisher findPublisherById(Long publisherId) throws PublisherException;
 
-    public Publisher findPublisherByName(String publisherName);
+    public List<Publisher> findAllPublishers();
 
-    public Publisher findAllPublishers();
-
-    public String deletePublisher(Long publisherId);
+    public void deletePublisher(Long publisherId) throws PublisherException;
 }
