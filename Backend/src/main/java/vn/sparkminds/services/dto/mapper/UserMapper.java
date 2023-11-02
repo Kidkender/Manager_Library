@@ -1,9 +1,11 @@
 package vn.sparkminds.services.dto.mapper;
 
 import java.util.Objects;
+import org.springframework.stereotype.Component;
 import vn.sparkminds.model.User;
 import vn.sparkminds.services.dto.response.UserResponse;
 
+@Component
 public class UserMapper {
     public UserResponse toUserResponse(User user) {
         if (Objects.isNull(user) == true) {

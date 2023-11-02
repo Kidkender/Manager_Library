@@ -42,7 +42,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteAuthor(Long authorId) throws AuthorException {
-        // TODO Auto-generated method stub
         Optional<Author> author = authorRepository.findById(authorId);
         if (author.isPresent()) {
             authorRepository.deleteById(authorId);
@@ -59,7 +58,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author findAuthorById(Long id) throws AuthorException {
-        // TODO Auto-generated method stub
         Optional<Author> opt = authorRepository.findById(id);
         if (opt.isPresent()) {
             return opt.get();
@@ -97,7 +95,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<AuthorResponse> findAuthorsByKeyword(String keyword) {
-        // TODO Auto-generated method stub
         List<AuthorResponse> list = authorRepository.findAuthorsByNameContainingKeyword(keyword)
                 .stream().map(author -> authorMapper.toAuthorResponse(author)).toList();
         return list;

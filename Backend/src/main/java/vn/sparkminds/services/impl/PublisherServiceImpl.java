@@ -13,7 +13,7 @@ import vn.sparkminds.services.PublisherService;
 public class PublisherServiceImpl implements PublisherService {
 
     @Autowired
-    private static PublisherRepository publisherRepository;
+    private PublisherRepository publisherRepository;
 
     @Override
     public Publisher createPublisher(Publisher req) {

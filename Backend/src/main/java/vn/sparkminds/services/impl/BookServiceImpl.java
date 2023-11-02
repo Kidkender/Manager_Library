@@ -1,8 +1,13 @@
 package vn.sparkminds.services.impl;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.sparkminds.exceptions.AuthorException;
@@ -122,14 +127,36 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookResponse> findBookByCategoryAuthor(Long category, Long AuthorId) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Book> importMutilBooks() {
-        // TODO Auto-generated method stub
+    public void importMutilBooks(Book[] req) {
+        for (Book book : req) {
+            createBook(book);
+        }
+
+    }
+
+    @Override
+    public List<Book> importMutilBookFromCsv(String path) {
+        BufferedReader fileReader = new BufferedReader(new InputStreamReader(path, "UTF-8"));
+        CSVParser csvParser = new CSVParser(fileReader, CSVFormat.DEFAULT);
+        Iterable<CSVRecord> csvRecords = csvParser.getRecords();
+        for (CSVRecord csvRecord : csvRecords) {
+
+        }
+
         return null;
+    }
+
+    @Override
+    public List<BookResponse> searchBooks(String query) throws BookException {
+        List<Book> books = bookRepository.findBookByTitle(query);
+        if (books.size() == 0) {
+            throw new BookException("No books found");
+        }
+        return books.stream().map(book -> bookMapper.toBookResponseDTO(book)).toList();
     }
 
 }

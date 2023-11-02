@@ -9,7 +9,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -32,13 +31,13 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "user_name")
+    private String userName;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "email", unique = true)
+    // @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password")

@@ -19,35 +19,33 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.sparkminds.constants.SecurityContext;
 
-public class JwtTokenValidator extends OncePerRequestFilter {
+public class JwtTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-      
-        String jwt = request.getHeader(SecurityContext.JWT_HEADER);
+        String jwt = request.getHeader(SecurityContext.HEADER);
         if (jwt != null) {
             try {
                 jwt = jwt.substring(7);
-                SecretKey key = Keys.hmacShaKeyFor(SecurityContext.SECRET_KEY.getBytes());
+                SecretKey key = Keys.hmacShaKeyFor(SecurityContext.JWT_KEY.getBytes());
                 Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt)
                         .getBody();
                 String user = String.valueOf(claims.get("username"));
-                String authorities = String.valueOf(claims.get("authorities"));
+                String authorities = (String) claims.get("authorities");
                 List<GrantedAuthority> auths =
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
                 Authentication auth = new UsernamePasswordAuthenticationToken(user, null, auths);
                 SecurityContextHolder.getContext().setAuthentication(auth);
+
             } catch (Exception e) {
-                throw new BadCredentialsException("Invalid jwt");
+                throw new BadCredentialsException("Invalid Jwt");
             }
         }
+        filterChain.doFilter(request, response);
     }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-      
-        return request.getServletPath().equals("/signin");
+    protected boolean shouldNotFilter(HttpServletRequest req) {
+        return req.getServletPath().equals("/signin");
     }
-
 }

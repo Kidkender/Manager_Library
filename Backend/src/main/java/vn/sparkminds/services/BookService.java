@@ -17,6 +17,8 @@ public interface BookService {
 
     public List<BookResponse> getAllBook();
 
+    public List<BookResponse> searchBooks(String query) throws BookException;
+
     public BookResponse updateBook(Long bookId, BookRequest req) throws BookException;
 
     public List<BookResponse> findBookByCategory(Long categoryId)
@@ -26,5 +28,7 @@ public interface BookService {
 
     public List<BookResponse> findBookByCategoryAuthor(Long category, Long AuthorId);
 
-    public List<Book> importMutilBooks();
+    public void importMutilBooks(Book[] req);
+
+    public List<Book> importMutilBookFromCsv(String path);
 }

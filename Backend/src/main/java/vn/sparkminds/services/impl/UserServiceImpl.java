@@ -1,6 +1,7 @@
 package vn.sparkminds.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,23 +14,22 @@ import vn.sparkminds.security.JwtTokenClaims;
 import vn.sparkminds.security.JwtTokenProvider;
 import vn.sparkminds.services.UserService;
 import vn.sparkminds.services.dto.mapper.UserMapper;
-import vn.sparkminds.services.dto.request.AddUserRequest;
 import vn.sparkminds.services.dto.request.UpdateUserRequest;
 import vn.sparkminds.services.dto.response.UserResponse;
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private static UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private static JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private static PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private static UserMapper userMapper;;
+    private UserMapper userMapper;;
 
     @Override
     public UserResponse findUserById(Long userId) throws UserException {
@@ -40,6 +40,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByJwt(String jwt) throws UserException {
+
+        jwt = jwt.substring(7);
         JwtTokenClaims tokenClaims = jwtTokenProvider.getClaimsFromToken(jwt);
         String email = tokenClaims.getUserName();
         Optional<User> opt = userRepository.findByEmail(email);
@@ -50,47 +52,82 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse signupUser(AddUserRequest user) throws UserException {
-        // TODO Auto-generated method stub
-        User isEmailExist = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new UserException("Email is already exist"));
-        User isUserNameExist = userRepository.findByName(user.getUsername())
-                .orElseThrow(() -> new UserException("Username is already exist"));
+    public User signupUser(User req) throws UserException {
+        Optional<User> isEmailExist = userRepository.findByEmail(req.getEmail());
+        if (isEmailExist.isPresent()) {
+            throw new UserException("Email is already in use");
+        }
+
+        Optional<User> isUserNameExist = userRepository.findByUserName(req.getName());
+        if (isUserNameExist.isPresent()) {
+            throw new UserException("User name is already in use");
+        }
         User newUser = new User();
-        newUser.setEmail(user.getEmail());
-        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        newUser.setName(user.getUsername());
+        newUser.setEmail(req.getEmail());
+        newUser.setPassword(passwordEncoder.encode(req.getPassword()));
+        newUser.setUserName(req.getUserName());
         newUser.setRole(Role.USER);
         newUser.setCreateAt(LocalDateTime.now());
-        User created = userRepository.save(newUser);
-        return userMapper.toUserResponse(created);
+        return userRepository.save(newUser);
+        // return userMapper.toUserResponse(created);
     }
 
     @Override
-    public UserResponse updateUser(User user, UpdateUserRequest req) throws UserException {
-        // TODO Auto-generated method stub
-        if (req.getPassword() != null) {
+    public UserResponse updateUser(String jwt, UpdateUserRequest req) throws UserException {
 
-            user.setPassword(req.getPassword());
-        }
+        User user = findUserByJwt(jwt);
         if (req.getAddress() != null) {
             user.setAddress(req.getAddress());
         }
         if (req.getUsername() != null) {
             user.setName(req.getUsername());
         }
+        if (req.getPhoneNumber() != null) {
+            user.setPhone(req.getPhoneNumber());
+        }
         User updated = userRepository.save(user);
         return userMapper.toUserResponse(updated);
     }
 
     @Override
-    public UserResponse findUserByEmail(String email) throws UserException {
-        // TODO Auto-generated method stub
+    public User findUserByEmail(String email) throws UserException {
+
         Optional<User> opt = userRepository.findByEmail(email);
         if (opt.isPresent()) {
-            return userMapper.toUserResponse(opt.get());
+            return opt.get();
         }
         throw new UserException("Could not find user with email " + email);
+    }
+
+    @Override
+    public List<User> searchUsers(String query) throws UserException {
+        List<User> users = userRepository.findByQuery(query);
+        if (users.size() == 0) {
+            throw new UserException("No users found for query " + query);
+        }
+        return users;
+    }
+
+    @Override
+    public String changeEmail(String jwt, String email) throws UserException {
+        User update = findUserByJwt(jwt);
+        update.setEmail(email);
+        User updated = userRepository.save(update);
+        return "Change email to " + updated.getEmail() + " successfully !!!";
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers() throws UserException {
+        List<User> users = userRepository.findAll();
+
+        return users.stream().map(user -> userMapper.toUserResponse(user)).toList();
+    }
+
+    @Override
+    public void resetPassword(String jwt, String password) throws UserException {
+        User user = findUserByJwt(jwt);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
     }
 
 
