@@ -18,6 +18,7 @@ import vn.sparkminds.model.Category;
 import vn.sparkminds.model.User;
 import vn.sparkminds.services.CategoryService;
 import vn.sparkminds.services.UserService;
+import vn.sparkminds.services.dto.request.AddCategoryRequest;
 import vn.sparkminds.services.dto.response.ApiResponse;
 
 @RestController
@@ -31,7 +32,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<Category> createCategoryHandler(
-            @RequestHeader("Authorization") String jwt, @RequestBody Category req)
+            @RequestHeader("Authorization") String jwt, @RequestBody AddCategoryRequest req)
             throws UserException {
         User user = userService.findUserByJwt(jwt);
         Category created = categoryService.createCategory(req);

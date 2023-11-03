@@ -9,13 +9,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -40,17 +35,6 @@ public class AppConfig {
         return http.build();
     }
 
-    // @Bean
-    // public SecurityFilterChain securityConfigration(HttpSecurity http) throws Exception {
-    // http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().cors()
-    // .and().authorizeHttpRequests().requestMatchers(HttpMethod.POST, "/signup")
-    // .permitAll().anyRequest().authenticated().and()
-    // .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
-    // .addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class)
-    // .csrf().disable().formLogin(Customizer.withDefaults())
-    // .httpBasic(Customizer.withDefaults());
-    // return http.build();
-    // }
 
 
     @Bean
@@ -58,14 +42,14 @@ public class AppConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserBuilder users = User.withDefaultPasswordEncoder();
-        UserDetails user = users.username("user").password("password").roles("USER").build();
-        UserDetails admin =
-                users.username("admin").password("password").roles("USER", "ADMIN").build();
-        return new InMemoryUserDetailsManager(admin);
-    }
+    // @Bean
+    // public UserDetailsService userDetailsService() {
+    // UserBuilder users = User.withDefaultPasswordEncoder();
+    // UserDetails user = users.username("user").password("password").roles("USER").build();
+    // UserDetails admin =
+    // users.username("admin").password("password").roles("USER", "ADMIN").build();
+    // return new InMemoryUserDetailsManager(admin, user);
+    // }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

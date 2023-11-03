@@ -39,7 +39,7 @@ public class PublisherController {
         return new ResponseEntity<>(createdPublisher, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Publisher>> getAllPublishersHandler() {
         List<Publisher> publishers = publisherService.findAllPublishers();
         return new ResponseEntity<>(publishers, HttpStatus.OK);

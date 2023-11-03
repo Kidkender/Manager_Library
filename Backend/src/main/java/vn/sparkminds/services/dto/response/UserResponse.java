@@ -9,6 +9,7 @@ import vn.sparkminds.model.Address;
 public class UserResponse {
     private String email;
     private String password;
-    private String username;
+    private String userName;
     private Address address;
+    private String phoneNumber;
 }

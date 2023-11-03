@@ -51,4 +51,7 @@ public class User {
 
     @Column(name = "createAt")
     private LocalDateTime createAt;
+
+    @Column(name = "updateAt")
+    private LocalDateTime updateAt;
 }

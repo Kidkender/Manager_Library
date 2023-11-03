@@ -41,12 +41,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public void deleteAuthor(Long authorId) throws AuthorException {
-        Optional<Author> author = authorRepository.findById(authorId);
-        if (author.isPresent()) {
-            authorRepository.deleteById(authorId);
-        }
-        throw new AuthorException("Author not found with id " + authorId);
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new AuthorException("Author not found with id " + authorId));
+
+        authorRepository.deleteById(author.getId());
+
     }
 
     @Override
@@ -73,10 +74,7 @@ public class AuthorServiceImpl implements AuthorService {
 
             author.setName(req.getName());
         }
-        if (req.getEmail() != null) {
 
-            author.setEmail(req.getEmail());
-        }
         if (req.getBio() != null) {
 
             author.setBiography(req.getBio());

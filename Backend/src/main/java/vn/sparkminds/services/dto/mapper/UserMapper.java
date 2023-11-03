@@ -11,7 +11,7 @@ public class UserMapper {
         if (Objects.isNull(user) == true) {
             return null;
         }
-        return new UserResponse(user.getEmail(), user.getPassword(), user.getName(),
-                user.getAddress());
+        return new UserResponse(user.getEmail(), user.getPassword(), user.getUserName(),
+                user.getAddress(), user.getPhone());
     }
 }

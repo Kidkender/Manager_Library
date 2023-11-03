@@ -5,9 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AuthorRequest {
+public class AddCategoryRequest {
     private String name;
-    private String bio;
-    private String national;
-
+    private String description;
+    private int total;
 }

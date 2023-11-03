@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.sparkminds.exceptions.PublisherException;
+import vn.sparkminds.model.Address;
 import vn.sparkminds.model.Publisher;
+import vn.sparkminds.repositories.AddressRepository;
 import vn.sparkminds.repositories.PublisherRepository;
 import vn.sparkminds.services.PublisherService;
 
@@ -15,11 +17,14 @@ public class PublisherServiceImpl implements PublisherService {
     @Autowired
     private PublisherRepository publisherRepository;
 
+    @Autowired
+    private AddressRepository addressRepository;
+
     @Override
     public Publisher createPublisher(Publisher req) {
         Publisher publisher = new Publisher();
         publisher.setName(req.getName());
-        publisher.setAddress(req.getAddress());
+        publisher.setAddresses(req.getAddresses());
         publisher.setCreateAt(LocalDateTime.now());
         return publisherRepository.save(publisher);
     }

@@ -9,7 +9,8 @@ import vn.sparkminds.model.Address;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserRequest {
-    private String username;
+    private String name;
+    private String userName;
     private String phoneNumber;
     private Address address;
 }

@@ -1,0 +1,4 @@
+title,description,price,discountedPrice,discountPersent,quantity,image_url,authorId,publisherId,categoryId
+Conan,Truyen trinh tham ,14,12.6,10,10,qaz.png,12,11,5
+Robot Hexman,Truyen khoa hoc,12,9.6,20,5,poz.png,11,12,6
+7 viên ngoc rong,Truyen tranh thieu nhi,15,15,0,20,uio.pnj,10,10,5

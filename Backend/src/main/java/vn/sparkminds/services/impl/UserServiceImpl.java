@@ -2,6 +2,7 @@ package vn.sparkminds.services.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -74,17 +75,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse updateUser(String jwt, UpdateUserRequest req) throws UserException {
+        if (Objects.isNull(req)) {
+            throw new IllegalStateException("Invalid data");
+        }
 
         User user = findUserByJwt(jwt);
         if (req.getAddress() != null) {
             user.setAddress(req.getAddress());
         }
-        if (req.getUsername() != null) {
-            user.setName(req.getUsername());
+        if (req.getUserName() != null) {
+            user.setUserName(req.getUserName());
         }
         if (req.getPhoneNumber() != null) {
             user.setPhone(req.getPhoneNumber());
         }
+        if (req.getName() != null) {
+            user.setName(req.getName());
+        }
+        user.setUpdateAt(LocalDateTime.now());
         User updated = userRepository.save(user);
         return userMapper.toUserResponse(updated);
     }
@@ -112,6 +120,7 @@ public class UserServiceImpl implements UserService {
     public String changeEmail(String jwt, String email) throws UserException {
         User update = findUserByJwt(jwt);
         update.setEmail(email);
+        update.setUpdateAt(LocalDateTime.now());
         User updated = userRepository.save(update);
         return "Change email to " + updated.getEmail() + " successfully !!!";
     }

@@ -1,5 +1,8 @@
 package vn.sparkminds.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,6 +39,13 @@ public class Address {
 
     @Column(name = "zip_code")
     private String zipCode;
+
+    @Column(name = "createdAt")
+    private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "publisher_id")
+    private Publisher publisher;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

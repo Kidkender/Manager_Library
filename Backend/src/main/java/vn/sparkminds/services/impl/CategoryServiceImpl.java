@@ -8,6 +8,7 @@ import vn.sparkminds.exceptions.CategoryException;
 import vn.sparkminds.model.Category;
 import vn.sparkminds.repositories.CategoryRepository;
 import vn.sparkminds.services.CategoryService;
+import vn.sparkminds.services.dto.request.AddCategoryRequest;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -16,12 +17,12 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public Category createCategory(Category category) {
+    public Category createCategory(AddCategoryRequest category) {
         Category newCategory = new Category();
         newCategory.setName(category.getName());
         newCategory.setDescription(category.getDescription());
-        newCategory.setQuantityInvetory(category.getTotalBook());
-        newCategory.setTotalBook(category.getTotalBook());
+        newCategory.setQuantityInvetory(category.getTotal());
+        newCategory.setTotalBook(category.getTotal());
         newCategory.setCreatedAt(LocalDateTime.now());
         return categoryRepository.save(newCategory);
     }

@@ -32,10 +32,10 @@ public class AdminUserController {
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam("search") String search,
+    public ResponseEntity<List<User>> searchUsers(@RequestParam("keyword") String keyword,
             @RequestHeader("Authorization") String authorization) throws UserException {
         User user = userService.findUserByJwt(authorization);
-        List<User> users = userService.searchUsers(search);
+        List<User> users = userService.searchUsers(keyword);
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
 

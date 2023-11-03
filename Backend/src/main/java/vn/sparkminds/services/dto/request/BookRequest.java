@@ -8,7 +8,6 @@ public class BookRequest {
     private double price;
     private int quantity;
     private String imageUrl;
-    private LocalDateTime updateAt;
 
     public BookRequest(String title, String description, double price, int quantity,
             String imageUrl, LocalDateTime updateAt) {
@@ -17,7 +16,6 @@ public class BookRequest {
         this.price = price;
         this.quantity = quantity;
         this.imageUrl = imageUrl;
-        this.updateAt = updateAt;
     }
 
     public String getTitle() {
@@ -60,18 +58,11 @@ public class BookRequest {
         this.imageUrl = imageUrl;
     }
 
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
 
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
-    }
 
     @Override
     public String toString() {
         return "BookRequest [title=" + title + ", description=" + description + ", price=" + price
-                + ", quantity=" + quantity + ", imageUrl=" + imageUrl + ", updateAt=" + updateAt
-                + "]";
+                + ", quantity=" + quantity + ", imageUrl=" + imageUrl + ", updateAt=" + "]";
     }
 }

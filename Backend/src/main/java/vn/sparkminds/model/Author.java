@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,13 +14,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import vn.sparkminds.utils.CustomLocalDateDeserializer;
 
 @Table(name = "t_authors")
 @Getter
@@ -39,7 +40,7 @@ public class Author {
     private String national;
 
     @Column(name = "birth")
-    @Temporal(TemporalType.DATE)
+    @JsonDeserialize(converter = CustomLocalDateDeserializer.class)
     private LocalDate birth;
 
     @Column(name = "biography")
@@ -48,7 +49,8 @@ public class Author {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> books = new ArrayList<Book>();
 
     @Column(name = "createAt")

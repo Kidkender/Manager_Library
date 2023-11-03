@@ -1,29 +1,33 @@
 package vn.sparkminds.services.impl;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import vn.sparkminds.exceptions.AuthorException;
 import vn.sparkminds.exceptions.BookException;
 import vn.sparkminds.exceptions.CategoryException;
+import vn.sparkminds.exceptions.PublisherException;
 import vn.sparkminds.model.Author;
 import vn.sparkminds.model.Book;
 import vn.sparkminds.model.Category;
+import vn.sparkminds.model.Publisher;
 import vn.sparkminds.model.enums.BookStatus;
 import vn.sparkminds.repositories.AuthorRepository;
 import vn.sparkminds.repositories.BookRepository;
 import vn.sparkminds.repositories.CategoryRepository;
+import vn.sparkminds.services.AuthorService;
 import vn.sparkminds.services.BookService;
+import vn.sparkminds.services.CategoryService;
+import vn.sparkminds.services.PublisherService;
 import vn.sparkminds.services.dto.mapper.BookMapper;
+import vn.sparkminds.services.dto.request.AddBookRequest;
 import vn.sparkminds.services.dto.request.BookRequest;
 import vn.sparkminds.services.dto.response.BookResponse;
+import vn.sparkminds.utils.CSVHelper;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -32,31 +36,50 @@ public class BookServiceImpl implements BookService {
     private final CategoryRepository categoryRepository;
     private final AuthorRepository authorRepository;
     private final BookMapper bookMapper;
+    private final AuthorService authorService;
+    private final CategoryService categoryService;
+    private final PublisherService publisherService;
+
+
 
     public BookServiceImpl(BookRepository bookRepository, CategoryRepository categoryRepository,
-            AuthorRepository authorRepository, BookMapper bookMapper) {
+            AuthorRepository authorRepository, BookMapper bookMapper, AuthorService authorService,
+            CategoryService categoryService, PublisherService publisherService) {
         this.bookRepository = bookRepository;
         this.categoryRepository = categoryRepository;
         this.authorRepository = authorRepository;
         this.bookMapper = bookMapper;
+        this.authorService = authorService;
+        this.categoryService = categoryService;
+        this.publisherService = publisherService;
     }
+
+
 
     @Override
     @Transactional
-    public Book createBook(Book req) {
+    public Book createBook(AddBookRequest req)
+            throws AuthorException, CategoryException, PublisherException {
         Book book = new Book();
+
+        Author author = authorService.findAuthorById(req.getAuthorId());
+        Category category = categoryService.findCategoryById(req.getCategoryId());
+        Publisher publisher = publisherService.findPublisherById(req.getPublisherId());
+
+        book.setQuantity(req.getTotalBook());
         book.setTitle(req.getTitle());
         book.setPrice(req.getPrice());
-        book.setAuthor(req.getAuthor());
+        book.setAuthor(author);
         book.setDescription(req.getDescription());
-        book.setCategory(req.getCategory());
-        book.setStatus(BookStatus.Inventory);
-        book.setPublisher(req.getPublisher());
+        book.setCategory(category);
+        book.setPublisher(publisher);
         book.setImageUrl(req.getImageUrl());
-        book.setCreateAt(LocalDateTime.now());
-        book.setNumRatings(0);
         book.setDiscountPersent(req.getDiscountPersent());
         book.setDiscountedPrice(req.getDiscountedPrice());
+        book.setStatus(BookStatus.Inventory);
+        book.setNumRatings(0);
+        book.setCreateAt(LocalDateTime.now());
+
         return bookRepository.save(book);
     }
 
@@ -131,32 +154,26 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void importMutilBooks(Book[] req) {
-        for (Book book : req) {
-            createBook(book);
-        }
-
-    }
-
-    @Override
-    public List<Book> importMutilBookFromCsv(String path) {
-        BufferedReader fileReader = new BufferedReader(new InputStreamReader(path, "UTF-8"));
-        CSVParser csvParser = new CSVParser(fileReader, CSVFormat.DEFAULT);
-        Iterable<CSVRecord> csvRecords = csvParser.getRecords();
-        for (CSVRecord csvRecord : csvRecords) {
-
-        }
-
-        return null;
-    }
-
-    @Override
     public List<BookResponse> searchBooks(String query) throws BookException {
         List<Book> books = bookRepository.findBookByTitle(query);
         if (books.size() == 0) {
             throw new BookException("No books found");
         }
         return books.stream().map(book -> bookMapper.toBookResponseDTO(book)).toList();
+    }
+
+    @Override
+    public void importMutilBookFromCsv(MultipartFile file)
+            throws AuthorException, CategoryException, PublisherException {
+        try {
+            List<AddBookRequest> books = CSVHelper.csvBooks(file.getInputStream());
+            for (AddBookRequest request : books) {
+                createBook(request);
+            }
+            // return bookRepository.saveAll(books);
+        } catch (IOException e) {
+            throw new RuntimeException("Fail to store csv data :" + e.getMessage());
+        }
     }
 
 }

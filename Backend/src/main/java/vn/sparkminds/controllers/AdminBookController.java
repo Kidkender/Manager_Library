@@ -10,16 +10,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import vn.sparkminds.exceptions.AuthorException;
 import vn.sparkminds.exceptions.BookException;
+import vn.sparkminds.exceptions.CategoryException;
+import vn.sparkminds.exceptions.PublisherException;
 import vn.sparkminds.exceptions.UserException;
 import vn.sparkminds.model.Book;
 import vn.sparkminds.model.User;
 import vn.sparkminds.services.BookService;
 import vn.sparkminds.services.UserService;
+import vn.sparkminds.services.dto.request.AddBookRequest;
 import vn.sparkminds.services.dto.request.BookRequest;
 import vn.sparkminds.services.dto.response.ApiResponse;
 import vn.sparkminds.services.dto.response.BookResponse;
+import vn.sparkminds.utils.CSVHelper;
 
 @RestController
 @RequestMapping("/api/admin/books")
@@ -33,7 +40,8 @@ public class AdminBookController {
 
     @PostMapping
     public ResponseEntity<Book> createBookHandler(@RequestHeader("Authorization") String jwt,
-            Book req) throws UserException {
+            @RequestBody AddBookRequest req)
+            throws UserException, AuthorException, CategoryException, PublisherException {
         User user = userService.findUserByJwt(jwt);
 
         Book createdBook = bookService.createBook(req);
@@ -54,18 +62,38 @@ public class AdminBookController {
             @RequestHeader("Authorization") String jwt) throws BookException, UserException {
         User user = userService.findUserByJwt(jwt);
         bookService.deleteBook(id);
-        ApiResponse response = new ApiResponse(jwt, true);
+        ApiResponse response =
+                new ApiResponse("Delete book with id " + id + " successfully !", true);
         return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
     }
 
     @PostMapping("/creates")
     public ResponseEntity<ApiResponse> createMutilpleBookHandler(
-            @RequestHeader("Authorization") String authorization, @RequestBody Book[] req)
-            throws UserException {
+            @RequestHeader("Authorization") String authorization, @RequestBody AddBookRequest[] req)
+            throws UserException, AuthorException, CategoryException, PublisherException {
         User user = userService.findUserByJwt(authorization);
-        bookService.importMutilBooks(req);
+        for (AddBookRequest book : req) {
+            bookService.createBook(book);
+        }
         ApiResponse response = new ApiResponse("Create mutiple book successfully", true);
         return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<ApiResponse> upLoadFileHandler(@RequestParam("file") MultipartFile file) {
+        String message = "";
+        if (CSVHelper.hasCSVFormat(file)) {
+            try {
+                bookService.importMutilBookFromCsv(file);
+                message = "Uploaded the file successfully : " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(message, true));
+            } catch (Exception e) {
+                message = "Could not upload the file : " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                        .body(new ApiResponse(message, false));
+            }
+        }
+        message = "Please upload a csv file !";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(message, false));
+    }
 }

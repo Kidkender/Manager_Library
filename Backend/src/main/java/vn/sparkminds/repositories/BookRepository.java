@@ -15,6 +15,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     public List<Book> findBookByCategory(@Param("id") Long id);
 
     @Modifying
-    @Query("Select DISTINCT b FROM Book b WHERE b.title LIKE %:query% ")
+    @Query("Select DISTINCT b FROM Book b WHERE b.title LIKE %:query% ORDER BY b.createAt Desc")
     public List<Book> findBookByTitle(@Param("query") String query);
 }
