@@ -1,12 +1,12 @@
 package vn.sparkminds.services;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 import vn.sparkminds.exceptions.AuthorException;
 import vn.sparkminds.exceptions.BookException;
 import vn.sparkminds.exceptions.CategoryException;
 import vn.sparkminds.exceptions.PublisherException;
-import vn.sparkminds.exceptions.UserException;
 import vn.sparkminds.model.Book;
 import vn.sparkminds.services.dto.request.AddBookRequest;
 import vn.sparkminds.services.dto.request.BookRequest;
@@ -36,6 +36,6 @@ public interface BookService {
         public void importMutilBookFromCsv(MultipartFile file)
                         throws AuthorException, CategoryException, PublisherException;
 
-
+        public ByteArrayInputStream exportBooksToCsv();
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,6 +24,7 @@ public class AdminUserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsersHandler(
             @RequestHeader("Authorization") String authorization) throws UserException {
@@ -32,6 +34,7 @@ public class AdminUserController {
     }
 
     @GetMapping(value = "/search")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<User>> searchUsers(@RequestParam("keyword") String keyword,
             @RequestHeader("Authorization") String authorization) throws UserException {
         User user = userService.findUserByJwt(authorization);
@@ -40,6 +43,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponse> getUserById(
             @RequestHeader("Authorization") String authorization, @PathVariable("id") Long id)
             throws UserException {

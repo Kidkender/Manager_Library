@@ -12,6 +12,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,18 +33,23 @@ public class Category {
     private Long id;
 
     @Column(name = "name")
+    @NotNull(message = "Name is required")
+    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
     private String name;
 
-    @Column(name = "description", length = 10000)
+    @Column(name = "description")
+    @Size(max = 255, message = "Description cannot exceed 255 characters")
     private String description;
 
     @Column(name = "createAt")
     private LocalDateTime createdAt;
 
     @Column(name = "quantity_invetory")
+    @Min(value = 0, message = "Quantity inventory must be greater than or equal to 0")
     private int quantityInvetory;
 
     @Column(name = "total_book")
+    @Min(value = 0, message = "Total books must be greater than or equal to 0")
     private int totalBook;
 
     @Column(name = "updatedAt")

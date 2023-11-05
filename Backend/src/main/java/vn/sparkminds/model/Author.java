@@ -14,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +36,7 @@ public class Author {
     private Long id;
 
     @Column(name = "name")
+    @NotBlank
     private String name;
 
     @Column(name = "national")
@@ -44,6 +47,7 @@ public class Author {
     private LocalDate birth;
 
     @Column(name = "biography")
+    @Size(min = 0, max = 255)
     private String biography;
 
     @Column(name = "email")

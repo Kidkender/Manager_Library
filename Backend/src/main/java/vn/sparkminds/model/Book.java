@@ -11,6 +11,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +34,12 @@ public class Book {
     private Long id;
 
     @Column(name = "title")
+    @NotBlank(message = "Title is required")
+    @Size(max = 255, message = "Title must be at most 255 characters")
     private String title;
 
     @Column(name = "description")
+    @Size(max = 1000, message = "Description must be at most 1000 characters")
     private String description;
 
     @ManyToOne
@@ -39,6 +47,7 @@ public class Book {
     private Category category;
 
     @Column(name = "price")
+    @DecimalMin(value = "0.0", inclusive = false, message = "price must be greater than 0")
     private double price;
 
     @Enumerated(EnumType.STRING)
@@ -46,12 +55,18 @@ public class Book {
     private BookStatus status;
 
     @Column(name = "discounted_price")
+    @DecimalMin(value = "0.0", message = "Discounted price must be greater than or equal to 0")
     private double discountedPrice;
 
     @Column(name = "discount_persent")
+    @DecimalMin(value = "0.0",
+            message = "Discount percentage price must be greater than or equal to 0")
+    @DecimalMax(value = "100.0",
+            message = "Discount percentage price must be less than or equal to 100")
     private double discountPersent;
 
     @Column(name = "quantity")
+    @Min(value = 0, message = "Quantity price must be greater than or equal to 0")
     private int quantity;
 
     @ManyToOne
@@ -62,10 +77,12 @@ public class Book {
     @JoinColumn(name = "author_id")
     private Author author;
 
+    // @URL
     @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "num_ratings")
+    @DecimalMin(value = "0.0", message = "Number of ratings must be greater than or equal to 0")
     private double numRatings;
 
     @Column(name = "createAt")

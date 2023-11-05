@@ -26,12 +26,13 @@ public class AppConfig {
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(t -> t.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req -> req.requestMatchers(HttpMethod.POST, "/signup")
-                        .permitAll().anyRequest().authenticated())
+                        .permitAll().requestMatchers(HttpMethod.POST, "/signin").permitAll()
+                        // .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .anyRequest().authenticated())
                 .addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JwtTokenValidatorFilter(), BasicAuthenticationFilter.class)
-                .csrf(csrf -> csrf.disable())
-                .formLogin(form -> form.loginPage("/signin").permitAll())
-                .httpBasic(Customizer.withDefaults());
+                // .formLogin(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable()).httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
@@ -41,15 +42,6 @@ public class AppConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    // @Bean
-    // public UserDetailsService userDetailsService() {
-    // UserBuilder users = User.withDefaultPasswordEncoder();
-    // UserDetails user = users.username("user").password("password").roles("USER").build();
-    // UserDetails admin =
-    // users.username("admin").password("password").roles("USER", "ADMIN").build();
-    // return new InMemoryUserDetailsManager(admin, user);
-    // }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

@@ -1,5 +1,6 @@
 package vn.sparkminds.services.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -128,7 +129,6 @@ public class BookServiceImpl implements BookService {
         }
         book.setUpdateAt(LocalDateTime.now());
         return bookMapper.toBookResponseDTO(book);
-
     }
 
     @Override
@@ -185,12 +185,18 @@ public class BookServiceImpl implements BookService {
             for (AddBookRequest request : books) {
                 createBook(request);
             }
-            // return bookRepository.saveAll(books);
         } catch (IOException e) {
             throw new RuntimeException("Fail to store csv data :" + e.getMessage());
         }
     }
 
 
+
+    @Override
+    public ByteArrayInputStream exportBooksToCsv() {
+        List<Book> books = bookRepository.findAll();
+        ByteArrayInputStream in = CSVHelper.exportToCSV(books);
+        return in;
+    }
 
 }

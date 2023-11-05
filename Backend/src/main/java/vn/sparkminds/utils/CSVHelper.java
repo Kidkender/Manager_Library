@@ -1,15 +1,22 @@
 package vn.sparkminds.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.QuoteMode;
 import org.springframework.web.multipart.MultipartFile;
+import vn.sparkminds.model.Book;
 import vn.sparkminds.services.dto.request.AddBookRequest;
 
 public class CSVHelper {
@@ -50,6 +57,27 @@ public class CSVHelper {
             return bookReqList;
         } catch (IOException e) {
             throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
+        }
+    }
+
+    public static ByteArrayInputStream exportToCSV(List<Book> bookList) {
+        final CSVFormat format = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.MINIMAL);
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+                CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);) {
+            csvPrinter.printRecord("ID", "Title", "Category", "Description", "Image URL", "Author",
+                    "Price (USD)", "Quantity");
+
+            for (Book book : bookList) {
+                List<String> data = Arrays.asList(String.valueOf(book.getId()), book.getTitle(),
+                        book.getCategory().getName(), book.getDescription(), book.getImageUrl(),
+                        book.getAuthor().getName(), String.valueOf(book.getPrice()),
+                        String.valueOf(book.getQuantity()));
+                csvPrinter.printRecord(data);
+            }
+            csvPrinter.flush();
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to import data to csv file  : " + e.getMessage());
         }
     }
 }

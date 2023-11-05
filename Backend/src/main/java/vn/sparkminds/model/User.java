@@ -15,6 +15,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,20 +39,24 @@ public class User {
     private String name;
 
     @Column(name = "user_name")
+    @NotBlank
     private String userName;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(name = "email")
+    @Email
     private String email;
 
     @Column(name = "password")
+    @NotBlank
     private String password;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
+    @Pattern(regexp = "^(0|[1-9][0-9]*)$")
     @Column(name = "phone")
     private String phone;
 

@@ -12,6 +12,7 @@ import vn.sparkminds.exceptions.UserException;
 import vn.sparkminds.model.Book;
 import vn.sparkminds.model.BorrowedBook;
 import vn.sparkminds.model.User;
+import vn.sparkminds.model.enums.BorrowStatus;
 import vn.sparkminds.repositories.BookRepository;
 import vn.sparkminds.repositories.BorrowedBookRepository;
 import vn.sparkminds.services.BookService;
@@ -47,11 +48,13 @@ public class BorrowBookServiceImpl implements BorrowBookService {
             throws UserException, BookException {
         User user = userService.findUserByJwt(jwt);
         Book book = bookService.getBookById(bookId);
-        BorrowedBook existingBorrowedBook =
-                borrowedBookRepository.findNotReturnedByUserAndBook(user, book);
+        // BorrowedBook existingBorrowedBook =
+        // borrowedBookRepository.findNotReturnedByUserAndBook(user, book);
+        BorrowedBook existingBorrowedBook = borrowedBookRepository.findNotReturnedByUser(user);
+
         if (existingBorrowedBook != null) {
             throw new BookNotBorrowedException(
-                    "You have already borrowed this book and it's not returned yet.");
+                    "You have already borrowed book and it's not returned yet.");
         }
         if (book.getQuantity() > 0) {
             book.setQuantity(book.getQuantity() - 1);
@@ -59,6 +62,7 @@ public class BorrowBookServiceImpl implements BorrowBookService {
             BorrowedBook borrowedBook = new BorrowedBook();
             borrowedBook.setUser(user);
             borrowedBook.setBook(book);
+            borrowedBook.setStatus(BorrowStatus.BORROWED);
             borrowedBook.setBorrowDate(LocalDateTime.now());
             BorrowedBook createdBorrowedBook = borrowedBookRepository.save(borrowedBook);
             BorrowBookResponse res = borrowBookMapper.toBorrowBookResponse(createdBorrowedBook);
@@ -81,8 +85,10 @@ public class BorrowBookServiceImpl implements BorrowBookService {
         BorrowedBook borrowedBook = borrowedBookRepository.findNotReturnedByUserAndBook(user, book);
         if (borrowedBook != null) {
             borrowedBook.setReturnDate(LocalDateTime.now());
+            borrowedBook.setStatus(BorrowStatus.RETURNED);
             borrowedBookRepository.save(borrowedBook);
             book.setQuantity(book.getQuantity() + 1);
+
             bookRepository.save(book);
         } else {
             throw new BookNotBorrowedException("Book was not borrowed by the user");

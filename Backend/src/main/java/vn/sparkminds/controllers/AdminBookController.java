@@ -1,9 +1,15 @@
 package vn.sparkminds.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,6 +45,7 @@ public class AdminBookController {
     private BookService bookService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Book> createBookHandler(@RequestHeader("Authorization") String jwt,
             @RequestBody AddBookRequest req)
             throws UserException, AuthorException, CategoryException, PublisherException {
@@ -49,6 +56,7 @@ public class AdminBookController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BookResponse> updateBookHandler(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String jwt, @RequestBody BookRequest req)
             throws BookException, UserException {
@@ -58,6 +66,7 @@ public class AdminBookController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse> deleteBookHandler(@PathVariable("id") Long id,
             @RequestHeader("Authorization") String jwt) throws BookException, UserException {
         User user = userService.findUserByJwt(jwt);
@@ -68,6 +77,7 @@ public class AdminBookController {
     }
 
     @PostMapping("/creates")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse> createMutilpleBookHandler(
             @RequestHeader("Authorization") String authorization, @RequestBody AddBookRequest[] req)
             throws UserException, AuthorException, CategoryException, PublisherException {
@@ -80,6 +90,7 @@ public class AdminBookController {
     }
 
     @PostMapping("/upload")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse> upLoadFileHandler(@RequestParam("file") MultipartFile file) {
         String message = "";
         if (CSVHelper.hasCSVFormat(file)) {
@@ -95,5 +106,15 @@ public class AdminBookController {
         }
         message = "Please upload a csv file !";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(message, false));
+    }
+
+    @GetMapping("/export")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Resource> exportCsvHandler() {
+        String fileName = "books.csv";
+        InputStreamResource file = new InputStreamResource(bookService.exportBooksToCsv());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                .contentType(MediaType.parseMediaType("application/csv")).body(file);
     }
 }
