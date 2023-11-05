@@ -106,11 +106,26 @@ public class BookServiceImpl implements BookService {
     public BookResponse updateBook(Long bookId, BookRequest req) throws BookException {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookException("Book not found: " + bookId));
-        book.setTitle(req.getTitle());
-        book.setDescription(req.getDescription());
-        book.setImageUrl(req.getImageUrl());
-        book.setQuantity(req.getQuantity());
-        book.setPrice(req.getPrice());
+        if (req.getTitle() != null) {
+
+            book.setTitle(req.getTitle());
+        }
+        if (req.getDescription() != null) {
+
+            book.setDescription(req.getDescription());
+        }
+        if (req.getImageUrl() != null) {
+
+            book.setImageUrl(req.getImageUrl());
+        }
+        if (req.getQuantity() != 0) {
+
+            book.setQuantity(req.getQuantity());
+        }
+        if (req.getPrice() != 0) {
+
+            book.setPrice(req.getPrice());
+        }
         book.setUpdateAt(LocalDateTime.now());
         return bookMapper.toBookResponseDTO(book);
 
@@ -175,5 +190,7 @@ public class BookServiceImpl implements BookService {
             throw new RuntimeException("Fail to store csv data :" + e.getMessage());
         }
     }
+
+
 
 }
