@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AddCategoryRequest {
-    private String name;
-    private String description;
-    private String imageUrl;
+public class UpdatePublisherRequest {
+    private String email;
+    private String phone;
 }

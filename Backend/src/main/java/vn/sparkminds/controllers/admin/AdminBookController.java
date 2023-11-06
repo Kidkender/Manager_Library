@@ -1,4 +1,4 @@
-package vn.sparkminds.controllers;
+package vn.sparkminds.controllers.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;

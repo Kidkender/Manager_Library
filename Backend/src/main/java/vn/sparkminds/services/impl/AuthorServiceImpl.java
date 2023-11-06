@@ -1,6 +1,7 @@
 package vn.sparkminds.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -98,6 +99,14 @@ public class AuthorServiceImpl implements AuthorService {
         return list;
     }
 
-
+    @Override
+    public List<Author> createMultipleAuthor(Author[] reqList) {
+        List<Author> list = new ArrayList<Author>();
+        for (Author author : reqList) {
+            Author createdAuthor = createAuthor(author);
+            list.add(createdAuthor);
+        }
+        return list;
+    }
 
 }

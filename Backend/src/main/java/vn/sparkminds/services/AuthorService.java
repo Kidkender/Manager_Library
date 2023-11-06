@@ -11,6 +11,8 @@ public interface AuthorService {
 
     public AuthorResponse updateAuthor(Long authorId, AuthorRequest req) throws AuthorException;
 
+    public List<Author> createMultipleAuthor(Author[] reqList);
+
     public void deleteAuthor(Long authorId) throws AuthorException;
 
     public Author findAuthorById(Long id) throws AuthorException;

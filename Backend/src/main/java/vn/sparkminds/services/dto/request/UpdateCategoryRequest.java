@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AddCategoryRequest {
+public class UpdateCategoryRequest {
     private String name;
     private String description;
     private String imageUrl;

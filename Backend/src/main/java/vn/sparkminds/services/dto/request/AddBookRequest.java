@@ -9,12 +9,12 @@ public class AddBookRequest {
     private Long authorId;
     private String imageUrl;
     private double discountedPrice;
-    private double discountPersent;
+    private double discountPercent;
     private int totalBook;
 
     public AddBookRequest(String title, String description, Long categoryId, double price,
             Long publisherId, Long authorId, String imageUrl, double discountedPrice,
-            double discountPersent, int totalBook) {
+            double discountPercent, int totalBook) {
         this.title = title;
         this.description = description;
         this.categoryId = categoryId;
@@ -23,7 +23,7 @@ public class AddBookRequest {
         this.authorId = authorId;
         this.imageUrl = imageUrl;
         this.discountedPrice = discountedPrice;
-        this.discountPersent = discountPersent;
+        this.discountPercent = discountPercent;
         this.totalBook = totalBook;
     }
 
@@ -101,11 +101,11 @@ public class AddBookRequest {
         this.discountedPrice = discountedPrice;
     }
 
-    public double getDiscountPersent() {
-        return discountPersent;
+    public double getDiscountPercent() {
+        return discountPercent;
     }
 
-    public void setDiscountPersent(double discountPersent) {
-        this.discountPersent = discountPersent;
+    public void setDiscountPersent(double discountPercent) {
+        this.discountPercent = discountPercent;
     }
 }

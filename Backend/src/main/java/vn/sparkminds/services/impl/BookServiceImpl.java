@@ -75,7 +75,7 @@ public class BookServiceImpl implements BookService {
         book.setCategory(category);
         book.setPublisher(publisher);
         book.setImageUrl(req.getImageUrl());
-        book.setDiscountPersent(req.getDiscountPersent());
+        book.setDiscountPercent(req.getDiscountPercent());
         book.setDiscountedPrice(req.getDiscountedPrice());
         book.setStatus(BookStatus.Inventory);
         book.setNumRatings(0);

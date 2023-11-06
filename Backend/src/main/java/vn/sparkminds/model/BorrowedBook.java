@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import vn.sparkminds.model.enums.BorrowStatus;
 
 @Entity
@@ -23,6 +24,7 @@ import vn.sparkminds.model.enums.BorrowStatus;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class BorrowedBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

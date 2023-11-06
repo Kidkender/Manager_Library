@@ -1,4 +1,4 @@
-package vn.sparkminds.controllers;
+package vn.sparkminds.controllers.admin;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
